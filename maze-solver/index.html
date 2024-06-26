@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Solver</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Maze Solver</h1>
+    <canvas id="mazeCanvas" width="512" height="512"></canvas>
+    <script>
+        async function fetchMaze() {
+            const response = await fetch('/maze');
+            const data = await response.json();
+            return data;
+        }
+
+        function drawMaze(maze, solution) {
+            const canvas = document.getElementById('mazeCanvas');
+            const ctx = canvas.getContext('2d');
+            const cellSize = canvas.width / maze.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < maze.length; y++) {
+                for (let x = 0; x < maze[y].length; x++) {
+                    if (maze[y][x] === 1) {
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    } else if (solution[y][x] === 1) {
+                        ctx.fillStyle = 'red';
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+        }
+
+        window.onload = async function() {
+            const { maze, solution } = await fetchMaze();
+            drawMaze(maze, solution);
+        }
+    </script>
+</body>
+</html>
